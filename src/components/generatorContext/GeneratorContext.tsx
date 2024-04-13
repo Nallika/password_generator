@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useState, useContext, useRef } from 'react';
 
 import { Criteria, Criterion, CriteriaEnum } from '../../types';
 import { generate } from '../passwordGenerator';
@@ -22,26 +22,24 @@ const getDefaultCriteria = () => {
  */
 const GeneratorContext = createContext<{
   password: string;
-  length: number;
-  criteria: Criteria;
   generatePassword: () => void;
-  setLength: (length: number) => void;
+  updateLength: (length: number) => void;
   updateCriteria: (criteria: Criterion) => void;
   checkCriterionChangeAllowed: (criterion: Criterion) => boolean;
 }>({
   password: '',
-  length: DEFAULT_LENGTH,
-  criteria: getDefaultCriteria(),
   generatePassword: () => {},
-  setLength: () => {},
+  updateLength: () => {},
   updateCriteria: () => {},
   checkCriterionChangeAllowed: () => true,
 });
 
 export const GeneratorContextProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [password, setPassword] = useState('');
-  const [length, setLength] = useState(DEFAULT_LENGTH);
-  const [criteria, setCriteria] = useState<Criteria>(getDefaultCriteria());
+
+  // Use refs to avoid unneded re-renders
+  const length = useRef(DEFAULT_LENGTH);
+  const criteria = useRef(getDefaultCriteria());
 
   /**
    * Run acutal password generation by provided criteria
@@ -50,11 +48,11 @@ export const GeneratorContextProvider: React.FC<{ children: React.ReactNode }> =
     /**
      * Pick only selected criteria
      */
-    const selectedCriteria = Object.keys(criteria).filter(
-      (key) => criteria[key as CriteriaEnum]
+    const selectedCriteria = Object.keys(criteria.current).filter(
+      (key) => criteria.current[key as CriteriaEnum]
     ) as CriteriaEnum[];
 
-    setPassword(generate(length, selectedCriteria));
+    setPassword(generate(length.current, selectedCriteria));
   };
 
   /**
@@ -62,30 +60,35 @@ export const GeneratorContextProvider: React.FC<{ children: React.ReactNode }> =
    */
   const checkCriterionChangeAllowed = (criterion: Criterion): boolean => {
     const newCriteriaValues = Object.values({
-      ...criteria,
+      ...criteria.current,
       ...criterion
     });
 
     return newCriteriaValues.some(value => value === true);
-  };
+  }
 
   /**
    * Update criteria state with provided criterion
    */
   const updateCriteria = (criterion: Criterion) => {
-    setCriteria({
-      ...criteria,
+    criteria.current = {
+      ...criteria.current,
       ...criterion
-    });
-  };
+    };
+  }
+
+  /**
+   * Update length state with provided value
+   */
+  const updateLength = (value: number) => {
+    length.current = value;
+  }
 
   return (
     <GeneratorContext.Provider value={{ 
         password,
-        length,
-        criteria,
         generatePassword,
-        setLength,
+        updateLength,
         updateCriteria,
         checkCriterionChangeAllowed
       }}>
