@@ -1,13 +1,28 @@
 import React from 'react';
 
-const LengthRange: React.FC = () => {
+import styles from './styles.module.scss';
+import { MAX_LENGTH, MIN_LENGTH } from '../../constants';
+import { useGeneratorContext } from '../generatorContext';
 
-  const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log('set range ', event.target.value);
+const LengthRange: React.FC = () => {
+  const { length, setLength } = useGeneratorContext();
+
+  const onMouseUp = (event: React.MouseEvent<HTMLInputElement>) => {
+    setLength(Number((event.target as HTMLInputElement).value));
   };
 
   return (
-    <input type='range' onChange={onChange} />
+    <div className={styles.wrapper}>
+      <label>Character length {length}</label>
+      <input
+        type='range'
+        defaultValue={length}
+        min={MIN_LENGTH}
+        max={MAX_LENGTH}
+        onMouseUp={onMouseUp}
+        />
+    </div>
+    
   );
 };
 

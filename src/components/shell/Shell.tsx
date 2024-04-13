@@ -3,18 +3,23 @@ import styles from './styles.module.scss';
 
 import { GeneratorContextProvider } from '../generatorContext';
 import { GenerateButton } from '../generateButton';
-import { Criterias } from '../criterias';
-import { GeneratorInput } from '../generatorInput';
+import { CriteriaList } from '../criteriasList';
+import { PasswordField } from '../passwordField';
 import { LengthRange } from '../lengthRange';
 
+/**
+ * Main component, contains all the other components
+ */
 const Shell = () => (
-  <div className={styles.wrapper}>
-    <GeneratorContextProvider>
-      <GeneratorInput />
-      <LengthRange />
-      <Criterias />
-      <GenerateButton />
-    </GeneratorContextProvider>
+  <div className={styles.container}>
+    <div className={styles.wrapper}>
+      <GeneratorContextProvider>
+        <PasswordField />
+        <LengthRange />
+        <CriteriaList />
+        <GenerateButton />
+      </GeneratorContextProvider>
+    </div>
   </div>
 );
 
