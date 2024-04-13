@@ -1,4 +1,4 @@
-import { CriteriaEnum } from "../types";
+import { CriteriaEnum } from '../types';
 
 export const MIN_LENGTH = 5;
 

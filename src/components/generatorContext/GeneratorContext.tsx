@@ -17,6 +17,9 @@ const getDefaultCriteria = () => {
   return defaultCriteria;
 };
 
+/**
+ * Context for sotore password criteria and run password generation
+ */
 const GeneratorContext = createContext<{
   password: string;
   length: number;
@@ -44,7 +47,14 @@ export const GeneratorContextProvider: React.FC<{ children: React.ReactNode }> =
    * Run acutal password generation by provided criteria
    */
   const generatePassword = () => {
-    setPassword(generate(length, criteria));
+    /**
+     * Pick only selected criteria
+     */
+    const selectedCriteria = Object.keys(criteria).filter(
+      (key) => criteria[key as CriteriaEnum]
+    ) as CriteriaEnum[];
+
+    setPassword(generate(length, selectedCriteria));
   };
 
   /**
