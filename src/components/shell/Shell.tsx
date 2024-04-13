@@ -3,7 +3,7 @@ import styles from './styles.module.scss';
 
 import { GeneratorContextProvider } from '../generatorContext';
 import { GenerateButton } from '../generateButton';
-import { CriteriaList } from '../criteriasList';
+import { CriteriaList } from '../criteriaList';
 import { PasswordField } from '../passwordField';
 import { LengthRange } from '../lengthRange';
 
